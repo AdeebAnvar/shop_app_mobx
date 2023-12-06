@@ -53,10 +53,12 @@ class FeatureImageWidget extends StatelessWidget {
             ),
             Expanded(
               flex: 3,
-              child: Image.network(data![0]
-                  .mediaGallery![singleProductStore!.selectedIndex]
-                  .url
-                  .toString()),
+              child: Image.network(
+                data![0]
+                    .mediaGallery![singleProductStore!.selectedIndex]
+                    .url
+                    .toString(),
+              ),
             ),
           ],
         ),

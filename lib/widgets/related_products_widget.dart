@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shopp_app_mobx/data/models/single_produc_model.dart' as spm;
 import 'package:shopp_app_mobx/widgets/centre_buttons.dart';
-import 'package:shopp_app_mobx/widgets/custom_button.dart';
 import 'package:shopp_app_mobx/widgets/rate.dart';
 
 class RelatedProductsWidget extends StatelessWidget {
@@ -36,7 +35,7 @@ class RelatedProductsWidget extends StatelessWidget {
                       child: SizedBox(
                           width: 100,
                           height: MediaQuery.of(context).size.height / 3,
-                          child: Column(
+                          child: const Column(
                             children: [
                               Icon(Icons.favorite_border_outlined),
                             ],
@@ -57,7 +56,7 @@ class RelatedProductsWidget extends StatelessWidget {
                 ],
               ),
             ]),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             Text(
               item.relatedProducts![index].name.toString(),
               style: TextStyle(
@@ -71,8 +70,11 @@ class RelatedProductsWidget extends StatelessWidget {
                 ),
               ],
             ),
-            CenterButtons(),
-            SizedBox(height: 10),
+            CenterButtons(
+              onPressedAddToCart: () {},
+              onPressedBuyNow: () {},
+            ),
+            const SizedBox(height: 10),
           ],
         ),
       ),

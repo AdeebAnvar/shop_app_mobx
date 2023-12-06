@@ -2,7 +2,6 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:mobx/mobx.dart';
 import 'package:shopp_app_mobx/constants/string.dart';
 import 'package:shopp_app_mobx/data/models/single_produc_model.dart';
@@ -19,32 +18,44 @@ class SingleProductWidget extends StatelessWidget {
       {super.key, required this.singleProductModel, this.singleProductStore});
   final SingleProductModel singleProductModel;
   final SingleProductStore? singleProductStore;
-  final TextEditingController quantityFieldController = TextEditingController();
+  final TextEditingController quantityFieldController =
+      TextEditingController(text: '${1}');
   @override
   Widget build(BuildContext context) {
     List<Item>? item = singleProductModel.products?.items;
     return ListView(
+      physics: const BouncingScrollPhysics(),
       children: [
         const SizedBox(height: 15),
+        //! routes
         TopBar(approutes: approutes),
         const SizedBox(height: 20),
+
+        //! featuredImage
         FeatureImageWidget(data: item, singleProductStore: singleProductStore),
         const SizedBox(height: 60),
+
+        //! name of the product
         Text(item![0].name.toString(),
             style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-        rateAndReviews(item[0]),
+        //! user reviews
+        ratingAndReviews(item[0]),
+
+        //! price of product
         Rate(item: item[0]),
         const SizedBox(height: 60),
-        const Divider(
-          endIndent: 10,
-          indent: 10,
-        ),
+        const Divider(endIndent: 10, indent: 10),
         const SizedBox(height: 20),
+
+        //! product color and other attributes
+
         buildColorStorageDelivery(
             item: item[0],
             store: singleProductStore!,
             controller: quantityFieldController),
         const SizedBox(height: 20),
+
+        //! products highlights
         item[0].shortDescription!.html!.isEmpty
             ? const SizedBox()
             : const Divider(
@@ -52,20 +63,33 @@ class SingleProductWidget extends StatelessWidget {
                 indent: 10,
               ),
         const SizedBox(height: 10),
+
+        //! products highlights
         item[0].shortDescription!.html!.isEmpty
             ? const SizedBox()
             : buildHighLightsTab(),
-        const CenterButtons(),
+
+        //! addtocart/buy now buttons
+        CenterButtons(
+          onPressedAddToCart: () =>
+              singleProductStore!.addItemToCart(ctx: context),
+          onPressedBuyNow: () => singleProductStore!.buyNow(),
+        ),
 
         const SizedBox(height: 20),
+
+        //! review and description tab
         ReviewTab(item: item[0], store: singleProductStore!),
         const SizedBox(height: 40),
         const Divider(),
         const SizedBox(height: 30),
+
+        //! specifications
         const Text(
           'Specifications:',
           style: TextStyle(fontWeight: FontWeight.w800),
         ),
+
         const SizedBox(height: 20),
         const Text('Display Size:6.7-inch',
             style: TextStyle(color: Colors.grey)),
@@ -76,6 +100,7 @@ class SingleProductWidget extends StatelessWidget {
         const Text('Warranty Summary : 1year warranty',
             style: TextStyle(color: Colors.grey)),
         const SizedBox(height: 30),
+
         item[0].relatedProducts!.isEmpty
             ? const SizedBox()
             : Row(
@@ -310,7 +335,6 @@ class SingleProductWidget extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 18.0),
       child: Column(
         children: [
-          // Configurable Options
           Column(
             children: item.configurableOptions!.map((e) {
               return Row(
@@ -337,19 +361,38 @@ class SingleProductWidget extends StatelessWidget {
                                 .map(
                                   (value) => Observer(
                                     builder: (_) {
+                                      if (selectedValues.isEmpty) {
+                                        selectedValues
+                                            .add(value.label.toString());
+                                        if (e.label == 'Color') {
+                                          store.colorValue =
+                                              value.label.toString();
+                                        } else {
+                                          store.sizeValue =
+                                              value.label.toString();
+                                        }
+                                      }
+
                                       final isSelected = selectedValues
                                           .contains(value.label.toString());
+
                                       return e.label == 'Color'
                                           ? InkWell(
                                               splashColor: Colors.transparent,
                                               onTap: () {
-                                                store.toggleSelectedValue(label,
-                                                    value.label.toString());
-                                                log('Clicked on $label: ${value.label}');
+                                                store.colorValue =
+                                                    value.label.toString();
+
+                                                store.toggleSelectedValue(
+                                                  label,
+                                                  value.label.toString(),
+                                                  item.sku,
+                                                );
+                                                log('Clicked on ${value.label}: vd${value.uid}');
                                               },
                                               child: AnimatedContainer(
-                                                duration:
-                                                    Duration(milliseconds: 500),
+                                                duration: const Duration(
+                                                    milliseconds: 500),
                                                 width: 40,
                                                 height: 40,
                                                 margin: const EdgeInsets.all(7),
@@ -358,7 +401,7 @@ class SingleProductWidget extends StatelessWidget {
                                                       width: 2,
                                                       color: isSelected
                                                           ? Colors.teal.shade700
-                                                          : Colors.transparent,
+                                                          : Colors.grey,
                                                     ),
                                                     color: Color(int.parse(
                                                             value.swatchData!
@@ -372,8 +415,12 @@ class SingleProductWidget extends StatelessWidget {
                                             )
                                           : ActionChip(
                                               onPressed: () {
-                                                store.toggleSelectedValue(label,
-                                                    value.label.toString());
+                                                store.sizeValue =
+                                                    value.label.toString();
+                                                store.toggleSelectedValue(
+                                                    label,
+                                                    value.label.toString(),
+                                                    item.sku);
                                                 log('Clicked on $label: ${value.label}');
                                               },
                                               shape: RoundedRectangleBorder(
@@ -406,10 +453,10 @@ class SingleProductWidget extends StatelessWidget {
           const SizedBox(height: 15),
           Row(
             children: [
-              Text('Quantity : '),
-              SizedBox(width: 10),
+              const Text('Quantity : '),
+              const SizedBox(width: 10),
               Expanded(
-                child: TextField(
+                child: TextFormField(
                   controller: quantityFieldController,
                   keyboardType: TextInputType.number,
                   decoration: InputDecoration(
@@ -421,7 +468,7 @@ class SingleProductWidget extends StatelessWidget {
                               controller.text =
                                   store.increaseQuantity().toString();
                             },
-                            child: Icon(Icons.arrow_drop_up_sharp)),
+                            child: const Icon(Icons.arrow_drop_up_sharp)),
                         InkWell(
                             onTap: () {
                               store.quantity = int.parse(controller.text);
@@ -429,14 +476,14 @@ class SingleProductWidget extends StatelessWidget {
                                   store.increaseQuantity().toString();
                               store.decreaseQuantity();
                             },
-                            child: Icon(Icons.arrow_drop_down_sharp)),
+                            child: const Icon(Icons.arrow_drop_down_sharp)),
                       ],
                     ),
-                    border: OutlineInputBorder(),
+                    border: const OutlineInputBorder(),
                   ),
                 ),
               ),
-              Expanded(
+              const Expanded(
                 flex: 2,
                 child: SizedBox(),
               )
@@ -465,7 +512,7 @@ class SingleProductWidget extends StatelessWidget {
     );
   }
 
-  Row rateAndReviews(Item item) {
+  Row ratingAndReviews(Item item) {
     return Row(
       children: [
         SizedBox(

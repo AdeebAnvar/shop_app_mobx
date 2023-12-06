@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:shopp_app_mobx/presentation/screens/login_screen.dart';
-import 'package:shopp_app_mobx/presentation/screens/product_detail_page.dart';
+import '../screens/login_screen.dart';
+import '../screens/product_detail_page.dart';
 
 class AppRouter {
-  Route getAppRoutes(RouteSettings routeSettings) {
+  Route<dynamic> getAppRoutes(RouteSettings routeSettings) {
     switch (routeSettings.name) {
       case '/':
         return MaterialPageRoute(

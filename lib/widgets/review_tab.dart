@@ -3,10 +3,8 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
-import 'package:provider/provider.dart';
-import 'package:shopp_app_mobx/data/models/single_produc_model.dart';
+import '../data/models/single_produc_model.dart';
 import 'package:shopp_app_mobx/logic/single_product/single_product_store.dart';
-import 'package:shopp_app_mobx/widgets/custom_button.dart';
 
 class ReviewTab extends StatelessWidget {
   const ReviewTab({super.key, required this.item, required this.store});
@@ -71,13 +69,14 @@ class ReviewTab extends StatelessWidget {
             children: [
               Text(
                 store.isSelectedDetailsTab ? 'Importat Note:' : 'Reviews',
-                style: TextStyle(fontWeight: FontWeight.w800),
+                style: const TextStyle(fontWeight: FontWeight.w800),
               ),
             ],
           ),
           const SizedBox(height: 20),
           AnimatedCrossFade(
-              duration: Duration(milliseconds: 700),
+              sizeCurve: Curves.easeInOutCubicEmphasized,
+              duration: const Duration(milliseconds: 700),
               crossFadeState: store.isSelectedDetailsTab
                   ? CrossFadeState.showFirst
                   : CrossFadeState.showSecond,
@@ -87,11 +86,11 @@ class ReviewTab extends StatelessWidget {
                       style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.yellow),
                       onPressed: () {},
-                      icon: Icon(
+                      icon: const Icon(
                         Icons.add,
                         color: Colors.black,
                       ),
-                      label: Text(
+                      label: const Text(
                         'Add Your Review',
                         style: TextStyle(color: Colors.black),
                       ))
