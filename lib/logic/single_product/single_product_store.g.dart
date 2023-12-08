@@ -311,17 +311,6 @@ mixin _$SingleProductStore on _SingleProductStore, Store {
   }
 
   @override
-  void setInitialSelection() {
-    final _$actionInfo = _$_SingleProductStoreActionController.startAction(
-        name: '_SingleProductStore.setInitialSelection');
-    try {
-      return super.setInitialSelection();
-    } finally {
-      _$_SingleProductStoreActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
   int increaseQuantity() {
     final _$actionInfo = _$_SingleProductStoreActionController.startAction(
         name: '_SingleProductStore.increaseQuantity');

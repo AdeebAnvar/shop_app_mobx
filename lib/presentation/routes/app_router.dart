@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../screens/login_screen.dart';
+import 'package:shopp_app_mobx/widgets/bottom_nav_widget.dart';
 import '../screens/product_detail_page.dart';
 
 class AppRouter {
@@ -7,7 +7,7 @@ class AppRouter {
     switch (routeSettings.name) {
       case '/':
         return MaterialPageRoute(
-          builder: (_) => const LoginScreen(),
+          builder: (_) => BottomNavWidget(),
         );
 
       case '/product_detail_screen':
@@ -16,7 +16,7 @@ class AppRouter {
         );
       default:
         return MaterialPageRoute(
-          builder: (_) => const LoginScreen(),
+          builder: (_) => BottomNavWidget(),
         );
     }
   }

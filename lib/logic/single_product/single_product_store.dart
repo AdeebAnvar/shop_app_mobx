@@ -2,7 +2,6 @@ import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:graphql_flutter/graphql_flutter.dart' as graphql;
 import 'package:mobx/mobx.dart' as mobx;
 import 'package:mobx/mobx.dart';
@@ -10,15 +9,15 @@ import 'package:shopp_app_mobx/constants/enums.dart';
 import 'package:shopp_app_mobx/data/models/add_to_cart_model.dart';
 import 'package:shopp_app_mobx/data/models/create_empty_cart_model.dart';
 import 'package:shopp_app_mobx/data/models/single_produc_model.dart';
+import 'package:shopp_app_mobx/data/providers/cart_providers.dart';
 import 'package:shopp_app_mobx/data/providers/single_product_provider.dart';
+import 'package:shopp_app_mobx/data/repositories/cart_repositories.dart';
 import 'package:shopp_app_mobx/data/repositories/single_product_repository.dart';
 import 'package:shopp_app_mobx/widgets/loading_dialogue.dart';
 part 'single_product_store.g.dart';
 
 class SingleProductStore extends _SingleProductStore with _$SingleProductStore {
   SingleProductStore(graphql.GraphQLClient client) : super(client);
-  @override
-  setInitialSelection();
 }
 
 abstract class _SingleProductStore with mobx.Store {
@@ -26,10 +25,15 @@ abstract class _SingleProductStore with mobx.Store {
 
   _SingleProductStore(this.client);
 
-  SingleProductRepository _singleProductRepository = SingleProductProvider();
+  final SingleProductRepository _singleProductRepository =
+      SingleProductProvider();
+
+  final CartRepository cartRepository = CartProviders();
+
   @mobx.observable
   mobx.ObservableFuture<graphql.QueryResult<SingleProductModel>?>?
       singleProductFuture;
+
   @mobx.observable
   mobx.ObservableFuture<graphql.QueryResult<CreateEmptyCartModel>?>?
       createEmptyCartFuture;
@@ -43,17 +47,22 @@ abstract class _SingleProductStore with mobx.Store {
 
   @mobx.observable
   graphql.QueryResult<SingleProductModel>? singleProductQueryResult;
+
   @mobx.observable
   graphql.QueryResult<CreateEmptyCartModel>? createEmptyCartModelQueryResult;
+
   @mobx.observable
   graphql.QueryResult<AddProductsToCart>? addProductsToCartModelQueryResult;
+
   @mobx.observable
   graphql.QueryResult<AddProductsToCart>? addProductToCartModelQueryResult;
 
   @mobx.observable
   SingleProductModel? singleProductData;
+
   @mobx.observable
   CreateEmptyCartModel? createEmptyCartModel;
+
   @mobx.observable
   AddProductsToCart? addProductsToCart;
 
@@ -68,6 +77,7 @@ abstract class _SingleProductStore with mobx.Store {
     if (singleProductFuture?.status == FutureStatus.rejected) {
       return StoreState.initial;
     }
+
     return singleProductFuture?.status == FutureStatus.pending
         ? StoreState.loading
         : StoreState.loaded;
@@ -79,19 +89,12 @@ abstract class _SingleProductStore with mobx.Store {
   }
 
   String colorValue = '';
+
   String sizeValue = '';
+
   @mobx.observable
   mobx.ObservableMap<String, mobx.ObservableSet<String>> selectedValuesByRow =
       mobx.ObservableMap<String, mobx.ObservableSet<String>>();
-  @mobx.action
-  void setInitialSelection() {
-    for (var entry in selectedValuesByRow.entries) {
-      if (entry.value.isNotEmpty) {
-        entry.value.clear();
-        entry.value.add(entry.value.first);
-      }
-    }
-  }
 
   @mobx.action
   Future<void> getSingleProductData() async {
@@ -99,13 +102,16 @@ abstract class _SingleProductStore with mobx.Store {
       singleProductFuture = mobx.ObservableFuture(
         _singleProductRepository.getSingleProduct(client),
       );
+
       singleProductQueryResult = await singleProductFuture;
 
       if (singleProductQueryResult != null &&
           singleProductQueryResult?.data != null) {
         singleProductData =
             SingleProductModel.fromJson(singleProductQueryResult!.data!);
+
         log('sku : ${singleProductData!.products!.items![0].sku}');
+
         parentSku = singleProductData!.products!.items![0].sku.toString();
 
         log('csku : ${singleProductData!.products!.items![0].variants![0].product!.sku}');
@@ -124,7 +130,9 @@ abstract class _SingleProductStore with mobx.Store {
 
   @mobx.action
   int decreaseQuantity() => quantity = quantity - 1;
+
   String parentSku = '';
+
   @mobx.action
   void changeDetailsTab() =>
       isSelectedDetailsTab = isSelectedDetailsTab = !isSelectedDetailsTab;
@@ -134,35 +142,45 @@ abstract class _SingleProductStore with mobx.Store {
     if (!selectedValuesByRow.containsKey(label)) {
       selectedValuesByRow[label] = mobx.ObservableSet<String>();
     }
+
     final selectedValues = selectedValuesByRow[label]!;
+
     parentSku = sku.toString();
+
     if (selectedValues.contains(value)) {
       selectedValues.remove(value);
     } else {
       selectedValues.clear();
+
       selectedValues.add(value);
     }
   }
 
   @mobx.observable
   String loadingString = 'Please Wait . . . ';
+
   @mobx.action
   Future<void> addItemToCart({required BuildContext ctx}) async {
     try {
       LoadingDialogue()
           .showCupertinoLoadingDialogue(ctx: ctx, loadingString: loadingString);
+
       createEmptyCartFuture = mobx.ObservableFuture(
-        _singleProductRepository.sendRequestEmptyCartId(client),
+        cartRepository.sendRequestForEmptyCartId(client),
       );
+
       loadingString = 'Sending request';
+
       createEmptyCartModelQueryResult = await createEmptyCartFuture;
 
       createEmptyCartModel =
           CreateEmptyCartModel.fromJson(createEmptyCartModelQueryResult!.data!);
+
       loadingString = 'Creating Cart';
 
       log(createEmptyCartModel?.createEmptyCart.toString() ??
           '$createEmptyCartModel');
+
       addProductToCartFuture = mobx.ObservableFuture(
           _singleProductRepository.addToCartSingleProduct(
               cartId: createEmptyCartModel!.createEmptyCart.toString(),
@@ -170,11 +188,14 @@ abstract class _SingleProductStore with mobx.Store {
               parentSku: parentSku,
               qunatity: quantity,
               sku: '$parentSku-$sizeValue-$colorValue'));
+
       loadingString = 'Adding to Cart';
+
       addProductToCartModelQueryResult = await addProductToCartFuture;
 
       addProductsToCart =
           AddProductsToCart.fromJson(addProductToCartModelQueryResult!.data!);
+
       loadingString = 'Adding to Cart';
     } finally {
       Navigator.pop(ctx);

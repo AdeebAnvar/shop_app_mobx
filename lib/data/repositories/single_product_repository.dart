@@ -14,7 +14,4 @@ abstract class SingleProductRepository {
     String? parentSku,
     String? sku,
   });
-
-  Future<QueryResult<CreateEmptyCartModel>?> sendRequestEmptyCartId(
-      GraphQLClient client);
 }

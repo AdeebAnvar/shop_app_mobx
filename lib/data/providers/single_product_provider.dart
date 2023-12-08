@@ -77,23 +77,4 @@ class SingleProductProvider implements SingleProductRepository {
       return null;
     }
   }
-
-  @override
-  Future<QueryResult<CreateEmptyCartModel>?> sendRequestEmptyCartId(
-      GraphQLClient client) async {
-    try {
-      QueryResult<CreateEmptyCartModel>? productData =
-          await client.mutate(MutationOptions(
-        onError: (e) {
-          log(e.toString());
-        },
-        document: gql('mutation {createEmptyCart}'),
-      ));
-      // log(productData.toString());
-
-      return productData;
-    } catch (e) {
-      return null;
-    }
-  }
 }

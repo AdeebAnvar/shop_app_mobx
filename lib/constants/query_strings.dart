@@ -288,3 +288,118 @@ String addToCartQuery =
     }
   }
   }""";
+String createEmptyCartQueryString = 'mutation {createEmptyCart}';
+String createCustomerCartQueryString = '{customerCart {id}}';
+
+String allCartsQueryString = """
+query(\$cart_id:String!){
+  cart(cart_id: \$cart_id) {
+    applied_coupon {
+      code
+    }
+    applied_coupons {
+      code
+    }
+    available_payment_methods {
+      code
+      is_deferred
+      title
+    }
+    billing_address {
+      city
+      company
+      country{
+        code ,
+        label,
+      }
+      customer_notes
+      firstname
+      lastname
+      postcode
+      region{
+        code,
+        label,
+        region_id
+      }
+      street
+      telephone
+      uid
+      vat_id
+    }
+    email
+    gift_message {
+      from
+      message
+      to
+    }
+    id
+    is_virtual
+    items {
+      errors{
+        code,
+        message,
+      }
+      id
+      prices{
+       
+        discounts{
+          amount{
+          currency,
+            value
+},
+          label,
+        }
+         price{
+        currency,value
+      }
+        price_including_tax{
+          currency,value
+        }
+         row_total{
+          currency,value
+        }
+         row_total_including_tax{
+          currency,value
+        }
+        total_item_discount{
+          currency,value
+        }
+      }
+     
+      product{
+        image{
+          url,
+          label
+        }
+      }
+      quantity
+      uid
+    }
+     prices{
+       grand_total{
+          value,currency
+        }
+      subtotal_with_discount_excluding_tax{
+        value,currency
+      }
+        discounts{
+          amount{
+          currency,
+            value
+},
+          label,
+        }
+        
+       
+       
+      }
+    selected_payment_method {
+      code
+      purchase_order_number
+      title
+    }
+    
+    total_quantity
+  }
+}
+""";
