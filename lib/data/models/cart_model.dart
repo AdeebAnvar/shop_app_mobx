@@ -2,6 +2,8 @@
 //
 //     final cartModel = cartModelFromJson(jsonString);
 
+// ignore_for_file: constant_identifier_names
+
 import 'dart:convert';
 
 CartModel cartModelFromJson(String str) => CartModel.fromJson(json.decode(str));
@@ -232,17 +234,20 @@ final currencyValues = EnumValues({"USD": Currency.USD});
 
 class Product {
   Image? image;
-
+  String? urlKey;
   Product({
     this.image,
+    this.urlKey,
   });
 
   factory Product.fromJson(Map<String, dynamic> json) => Product(
+        urlKey: json['url_key'] ?? '',
         image: json["image"] == null ? null : Image.fromJson(json["image"]),
       );
 
   Map<String, dynamic> toJson() => {
         "image": image?.toJson(),
+        "url_key": urlKey,
       };
 }
 

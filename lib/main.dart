@@ -4,7 +4,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:shopp_app_mobx/data/providers/single_product_provider.dart';
 import 'package:shopp_app_mobx/data/providers/token_provider.dart';
 import 'package:shopp_app_mobx/logic/bottom_nav/bottom_nav_store.dart';
 import 'package:shopp_app_mobx/logic/cart_screen/cart_screen_store.dart';

@@ -107,6 +107,7 @@ String readSingleProducts =
         }
         ... on ConfigurableProduct {
           configurable_options {
+            
             id
             attribute_id_v2
             label
@@ -125,6 +126,7 @@ String readSingleProducts =
           }
           variants {
             product {
+              stock_status
               id
               name
               sku
@@ -132,6 +134,8 @@ String readSingleProducts =
               media_gallery {
                 url
                 label
+                disabled
+                position
               }
               ... on PhysicalProductInterface {
                 weight
@@ -167,16 +171,17 @@ String readSingleProducts =
         media_gallery {
             url
             label
-            ... on ProductVideo {
-                video_content {
-                    media_type
-                    video_provider
-                    video_url
-                    video_title
-                    video_description
-                    video_metadata
-                }
-            }
+          disabled
+#             ... on ProductVideo {
+#                 video_content {
+#                     media_type
+#                     video_provider
+#                     video_url
+#                     video_title
+#                     video_description
+#                     video_metadata
+#                 }
+#             }
         }
         related_products{
           name
@@ -236,7 +241,6 @@ String readSingleProducts =
       }
     }
   }
-  
   """;
 
 String addToCartQuery =
@@ -367,6 +371,7 @@ query(\$cart_id:String!){
       }
      
       product{
+        url_key
         image{
           url,
           label

@@ -26,7 +26,7 @@ class _CartScreenState extends State<CartScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          actions: [
+          actions: const [
             Icon(Icons.menu),
             SizedBox(width: 20, height: 20),
           ],
@@ -38,17 +38,17 @@ class _CartScreenState extends State<CartScreen> {
               child: Row(
                 children: [
                   Container(
-                      padding: EdgeInsets.all(3),
+                      padding: const EdgeInsets.all(3),
                       decoration: BoxDecoration(
                         color: Colors.grey.shade500,
                         shape: BoxShape.circle,
                       ),
-                      child: Icon(
+                      child: const Icon(
                         Icons.check,
                         color: Colors.white,
                         size: 13,
                       )),
-                  SizedBox(width: 20),
+                  const SizedBox(width: 20),
                   Text(
                     'Shopping Cart',
                     style: TextStyle(
@@ -60,17 +60,13 @@ class _CartScreenState extends State<CartScreen> {
                 ],
               ),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             paths('Address'),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             paths('Payment'),
-            SizedBox(height: 10),
-            Divider(),
-            Padding(
-              padding: const EdgeInsets.all(18),
-            ),
+            const SizedBox(height: 10),
+            const Divider(),
             Observer(builder: (_) {
-              final cartItem = cartScreenStore?.cartModel;
               switch (cartScreenStore?.state) {
                 case StoreState.initial:
                   return const Text('No Data');
@@ -92,17 +88,17 @@ class _CartScreenState extends State<CartScreen> {
       child: Row(
         children: [
           Container(
-              padding: EdgeInsets.all(3),
+              padding: const EdgeInsets.all(3),
               decoration: BoxDecoration(
                 color: Colors.grey.shade500,
                 shape: BoxShape.circle,
               ),
-              child: Icon(
+              child: const Icon(
                 Icons.check,
                 color: Colors.white,
                 size: 13,
               )),
-          SizedBox(width: 20),
+          const SizedBox(width: 20),
           Text(
             label,
             style: TextStyle(

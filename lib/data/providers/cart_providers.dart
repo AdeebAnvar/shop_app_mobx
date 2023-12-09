@@ -51,5 +51,6 @@ class CartProviders implements CartRepository {
     } catch (e) {
       log(e.toString());
     }
+    return null;
   }
 }

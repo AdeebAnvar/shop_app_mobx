@@ -1,7 +1,5 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shopp_app_mobx/logic/cart_screen/cart_screen_store.dart';
-import 'package:shopp_app_mobx/widgets/custom_button.dart';
 
 class CartScreenWidget extends StatelessWidget {
   const CartScreenWidget({super.key, this.store});
@@ -18,9 +16,19 @@ class CartScreenWidget extends StatelessWidget {
                       vertical: 25.0, horizontal: 20),
                   child: Column(
                     children: [
-                      Image.network(
-                        height: 150,
-                        item.product!.image!.url.toString(),
+                      Hero(
+                        tag: item.product!.image!.url.toString(),
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.of(context).pushNamed(
+                                '/product_detail_screen',
+                                arguments: item.product!.urlKey);
+                          },
+                          child: Image.network(
+                            height: 150,
+                            item.product!.image!.url.toString(),
+                          ),
+                        ),
                       ),
                       Text(
                         item.product!.image!.label.toString(),
@@ -140,7 +148,8 @@ class CartScreenWidget extends StatelessWidget {
                   const SizedBox(height: 10),
                   Text(
                     'Subtotal      \$${store!.cartModel!.cart!.prices!.subtotalWithDiscountExcludingTax!.value.toString()}',
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                    style: const TextStyle(
+                        fontWeight: FontWeight.bold, fontSize: 15),
                   ),
                   const SizedBox(height: 10),
                   const Text(
@@ -169,7 +178,7 @@ class CartScreenWidget extends StatelessWidget {
                     children: [
                       Text(
                         'Order Total       \$${store!.cartModel!.cart!.prices!.grandTotal!.value.toString()}',
-                        style: TextStyle(
+                        style: const TextStyle(
                             fontWeight: FontWeight.bold, fontSize: 20),
                       ),
                     ],

@@ -1,6 +1,5 @@
 import 'dart:developer';
 
-import 'package:graphql/src/core/query_result.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:shopp_app_mobx/data/repositories/login_repository.dart';
 

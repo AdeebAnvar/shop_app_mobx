@@ -44,17 +44,28 @@ class FeatureImageWidget extends StatelessWidget {
                         child: Center(
                           child: Image.network(
                               height: 50,
-                              data![0].mediaGallery![index].url.toString()),
+                              data![0]
+                                  .variants![singleProductStore!.colorIndex]
+                                  .product!
+                                  .mediaGallery![index]
+                                  .url
+                                  .toString()),
                         ),
                       ),
                     );
                   },
-                  itemCount: data![0].mediaGallery!.length),
+                  itemCount: data![0]
+                      .variants![singleProductStore!.colorIndex]
+                      .product!
+                      .mediaGallery!
+                      .length),
             ),
             Expanded(
               flex: 3,
               child: Image.network(
                 data![0]
+                    .variants![singleProductStore!.colorIndex]
+                    .product!
                     .mediaGallery![singleProductStore!.selectedIndex]
                     .url
                     .toString(),

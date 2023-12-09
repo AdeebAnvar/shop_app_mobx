@@ -84,9 +84,9 @@ class Aggregation {
   });
 
   factory Aggregation.fromJson(Map<String, dynamic> json) => Aggregation(
-        attributeCode: json["attribute_code"] ?? '',
-        count: json["count"] ?? 0,
-        label: json["label"] ?? '',
+        attributeCode: json["attribute_code"],
+        count: json["count"],
+        label: json["label"],
         options: json["options"] == null
             ? []
             : List<AggregationOption>.from(
@@ -116,9 +116,9 @@ class AggregationOption {
 
   factory AggregationOption.fromJson(Map<String, dynamic> json) =>
       AggregationOption(
-        label: json["label"] ?? "",
-        value: json["value"] ?? '',
-        count: json["count"] ?? 0,
+        label: json["label"],
+        value: json["value"],
+        count: json["count"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -136,7 +136,7 @@ class Item {
   Image? image;
   int? ratingSummary;
   int? reviewCount;
-  String? stockStatus;
+  StockStatus? stockStatus;
   List<Category>? categories;
   dynamic weight;
   Description? description;
@@ -172,14 +172,14 @@ class Item {
   });
 
   factory Item.fromJson(Map<String, dynamic> json) => Item(
-        name: json["name"] ?? '',
-        sku: json["sku"] ?? '',
+        name: json["name"],
+        sku: json["sku"],
         urlKey: json["url_key"],
         urlSuffix: json["url_suffix"],
         image: json["image"] == null ? null : Image.fromJson(json["image"]),
         ratingSummary: json["rating_summary"],
         reviewCount: json["review_count"],
-        stockStatus: json["stock_status"],
+        stockStatus: stockStatusValues.map[json["stock_status"]],
         categories: json["categories"] == null
             ? []
             : List<Category>.from(
@@ -222,7 +222,7 @@ class Item {
         "image": image?.toJson(),
         "rating_summary": ratingSummary,
         "review_count": reviewCount,
-        "stock_status": stockStatus,
+        "stock_status": stockStatusValues.reverse[stockStatus],
         "categories": categories == null
             ? []
             : List<dynamic>.from(categories!.map((x) => x.toJson())),
@@ -350,7 +350,7 @@ class Value {
         swatchData: json["swatch_data"] == null
             ? null
             : SwatchData.fromJson(json["swatch_data"]),
-        code: codeValues.map[json["code"]] ?? Code.SIZE,
+        code: codeValues.map[json["code"]],
       );
 
   Map<String, dynamic> toJson() => {
@@ -413,20 +413,28 @@ class Image {
 class MediaGallery {
   String? url;
   String? label;
+  bool? disabled;
+  int? position;
 
   MediaGallery({
     this.url,
     this.label,
+    this.disabled,
+    this.position,
   });
 
   factory MediaGallery.fromJson(Map<String, dynamic> json) => MediaGallery(
         url: json["url"],
         label: json["label"],
+        disabled: json["disabled"],
+        position: json["position"],
       );
 
   Map<String, dynamic> toJson() => {
         "url": url,
         "label": label,
+        "disabled": disabled,
+        "position": position,
       };
 }
 
@@ -509,7 +517,7 @@ class RegularPrice {
 
   factory RegularPrice.fromJson(Map<String, dynamic> json) => RegularPrice(
         value: json["value"],
-        currency: currencyValues.map[json["currency"]]!,
+        currency: currencyValues.map[json["currency"]],
       );
 
   Map<String, dynamic> toJson() => {
@@ -540,6 +548,72 @@ class MinimumPrice {
       };
 }
 
+class RelatedProduct {
+  String? name;
+  String? sku;
+  String? urlKey;
+  String? urlSuffix;
+  Image? image;
+  int? ratingSummary;
+  int? reviewCount;
+  StockStatus? stockStatus;
+  List<Category>? categories;
+  PriceRange? priceRange;
+
+  RelatedProduct({
+    this.name,
+    this.sku,
+    this.urlKey,
+    this.urlSuffix,
+    this.image,
+    this.ratingSummary,
+    this.reviewCount,
+    this.stockStatus,
+    this.categories,
+    this.priceRange,
+  });
+
+  factory RelatedProduct.fromJson(Map<String, dynamic> json) => RelatedProduct(
+        name: json["name"],
+        sku: json["sku"],
+        urlKey: json["url_key"],
+        urlSuffix: json["url_suffix"],
+        image: json["image"] == null ? null : Image.fromJson(json["image"]),
+        ratingSummary: json["rating_summary"],
+        reviewCount: json["review_count"],
+        stockStatus: stockStatusValues.map[json["stock_status"]],
+        categories: json["categories"] == null
+            ? []
+            : List<Category>.from(
+                json["categories"]!.map((x) => Category.fromJson(x))),
+        priceRange: json["price_range"] == null
+            ? null
+            : PriceRange.fromJson(json["price_range"]),
+      );
+
+  Map<String, dynamic> toJson() => {
+        "name": name,
+        "sku": sku,
+        "url_key": urlKey,
+        "url_suffix": urlSuffix,
+        "image": image?.toJson(),
+        "rating_summary": ratingSummary,
+        "review_count": reviewCount,
+        "stock_status": stockStatusValues.reverse[stockStatus],
+        "categories": categories == null
+            ? []
+            : List<dynamic>.from(categories!.map((x) => x.toJson())),
+        "price_range": priceRange?.toJson(),
+      };
+}
+
+enum StockStatus { IN_STOCK, OUT_OF_STOCK }
+
+final stockStatusValues = EnumValues({
+  "IN_STOCK": StockStatus.IN_STOCK,
+  "OUT_OF_STOCK": StockStatus.OUT_OF_STOCK
+});
+
 class Variant {
   Product? product;
   List<Value>? attributes;
@@ -567,6 +641,7 @@ class Variant {
 }
 
 class Product {
+  StockStatus? stockStatus;
   int? id;
   String? name;
   String? sku;
@@ -576,6 +651,7 @@ class Product {
   PriceRange? priceRange;
 
   Product({
+    this.stockStatus,
     this.id,
     this.name,
     this.sku,
@@ -586,6 +662,7 @@ class Product {
   });
 
   factory Product.fromJson(Map<String, dynamic> json) => Product(
+        stockStatus: stockStatusValues.map[json["stock_status"]],
         id: json["id"],
         name: json["name"],
         sku: json["sku"],
@@ -601,6 +678,7 @@ class Product {
       );
 
   Map<String, dynamic> toJson() => {
+        "stock_status": stockStatusValues.reverse[stockStatus],
         "id": id,
         "name": name,
         "sku": sku,
@@ -693,63 +771,4 @@ class EnumValues<T> {
     reverseMap = map.map((k, v) => MapEntry(v, k));
     return reverseMap;
   }
-}
-
-class RelatedProduct {
-  String? name;
-  String? sku;
-  String? urlKey;
-  String? urlSuffix;
-  Image? image;
-  int? ratingSummary;
-  int? reviewCount;
-  String? stockStatus;
-  List<Category>? categories;
-  PriceRange? priceRange;
-
-  RelatedProduct({
-    this.name,
-    this.sku,
-    this.urlKey,
-    this.urlSuffix,
-    this.image,
-    this.ratingSummary,
-    this.reviewCount,
-    this.stockStatus,
-    this.categories,
-    this.priceRange,
-  });
-
-  factory RelatedProduct.fromJson(Map<String, dynamic> json) => RelatedProduct(
-        name: json["name"],
-        sku: json["sku"],
-        urlKey: json["url_key"],
-        urlSuffix: json["url_suffix"],
-        image: json["image"] == null ? null : Image.fromJson(json["image"]),
-        ratingSummary: json["rating_summary"],
-        reviewCount: json["review_count"],
-        stockStatus: json["stock_status"],
-        categories: json["categories"] == null
-            ? []
-            : List<Category>.from(
-                json["categories"]!.map((x) => Category.fromJson(x))),
-        priceRange: json["price_range"] == null
-            ? null
-            : PriceRange.fromJson(json["price_range"]),
-      );
-
-  Map<String, dynamic> toJson() => {
-        "name": name,
-        "sku": sku,
-        "url_key": urlKey,
-        "url_suffix": urlSuffix,
-        "image": image?.toJson(),
-        "rating_summary": ratingSummary,
-        "review_count": reviewCount,
-        "stock_status": stockStatus,
-        "categories": categories == null
-            ? []
-            : List<dynamic>.from(categories!.map((x) => x.toJson())),
-        "price_range": priceRange?.toJson(),
-      };
 }

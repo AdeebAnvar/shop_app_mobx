@@ -97,10 +97,11 @@ abstract class _SingleProductStore with mobx.Store {
       mobx.ObservableMap<String, mobx.ObservableSet<String>>();
 
   @mobx.action
-  Future<void> getSingleProductData() async {
+  Future<void> getSingleProductData({required String urlKey}) async {
     try {
+      log('URL_KEY : $urlKey');
       singleProductFuture = mobx.ObservableFuture(
-        _singleProductRepository.getSingleProduct(client),
+        _singleProductRepository.getSingleProduct(client, urlKey: urlKey),
       );
 
       singleProductQueryResult = await singleProductFuture;
@@ -136,9 +137,11 @@ abstract class _SingleProductStore with mobx.Store {
   @mobx.action
   void changeDetailsTab() =>
       isSelectedDetailsTab = isSelectedDetailsTab = !isSelectedDetailsTab;
-
+  @observable
+  int colorIndex = 0;
   @mobx.action
-  void toggleSelectedValue(String label, String value, String? sku) {
+  void toggleSelectedValue(String label, String value, String? sku, int index) {
+    colorIndex = index;
     if (!selectedValuesByRow.containsKey(label)) {
       selectedValuesByRow[label] = mobx.ObservableSet<String>();
     }
@@ -153,6 +156,17 @@ abstract class _SingleProductStore with mobx.Store {
       selectedValues.clear();
 
       selectedValues.add(value);
+    }
+  }
+
+  String stockStatusToString(StockStatus status) {
+    switch (status) {
+      case StockStatus.IN_STOCK:
+        return 'In Stock';
+      case StockStatus.OUT_OF_STOCK:
+        return 'Out of Stock';
+      default:
+        return '';
     }
   }
 

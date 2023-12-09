@@ -3,15 +3,14 @@ import 'dart:developer';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:shopp_app_mobx/constants/query_strings.dart';
 import 'package:shopp_app_mobx/data/models/add_to_cart_model.dart';
-import 'package:shopp_app_mobx/data/models/create_empty_cart_model.dart';
 import 'package:shopp_app_mobx/data/models/single_produc_model.dart';
 import 'package:shopp_app_mobx/data/repositories/single_product_repository.dart';
 
 class SingleProductProvider implements SingleProductRepository {
   @override
   Future<QueryResult<SingleProductModel>?> getSingleProduct(
-    GraphQLClient client,
-  ) async {
+      GraphQLClient client,
+      {required String urlKey}) async {
     try {
       log('getSingle Product $readSingleProducts');
       QueryResult<SingleProductModel>? productData =
@@ -20,9 +19,9 @@ class SingleProductProvider implements SingleProductRepository {
           log(e.toString());
         },
         document: gql(readSingleProducts),
-        variables: const {
+        variables: {
           "filter": {
-            "url_key": {"eq": "leah-yoga-top"}
+            "url_key": {"eq": urlKey}
           },
           "pageSize": 20,
           "page": 1
@@ -37,7 +36,6 @@ class SingleProductProvider implements SingleProductRepository {
         //   "page": 1
         // },
       ));
-      log(productData.toString());
       return productData;
     } catch (e) {
       log(e.toString());

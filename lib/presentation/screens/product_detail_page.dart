@@ -9,8 +9,8 @@ import 'package:shopp_app_mobx/logic/single_product/single_product_store.dart';
 import 'package:shopp_app_mobx/widgets/single_product_widget.dart';
 
 class ProductDetailScreen extends StatefulWidget {
-  const ProductDetailScreen({super.key});
-
+  const ProductDetailScreen({super.key, required this.urlKey});
+  final String urlKey;
   @override
   State<ProductDetailScreen> createState() => _ProductDetailScreenState();
 }
@@ -21,7 +21,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   void didChangeDependencies() async {
     super.didChangeDependencies();
     singleProductStore ??= Provider.of<SingleProductStore>(context);
-    await singleProductStore?.getSingleProductData();
+    await singleProductStore?.getSingleProductData(urlKey: widget.urlKey);
   }
 
   @override
@@ -32,11 +32,9 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
           onNotification: (notification) {
             final ScrollDirection scrollDirection = notification.direction;
             if (scrollDirection == ScrollDirection.reverse) {
-              log('reverse scrolling');
               singleProductStore!.hideAppBar = false;
             } else if (scrollDirection == ScrollDirection.forward) {
               singleProductStore!.hideAppBar = true;
-              log('forward scrolling');
             } else {
               log('Idle ');
             }
@@ -48,16 +46,18 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                     surfaceTintColor: Colors.transparent,
                     backgroundColor: Colors.transparent,
                     elevation: 0,
-                    leading: Container(
-                      margin: const EdgeInsets.only(left: 10),
-                      decoration: BoxDecoration(border: Border.all()),
-                      child: const Center(
-                        child: Text(
-                          'Logo of the APP',
-                          style: TextStyle(fontWeight: FontWeight.w500),
-                        ),
-                      ),
-                    ),
+
+                    // leading: Container(
+
+                    //   margin: const EdgeInsets.only(left: 10),
+                    //   decoration: BoxDecoration(border: Border.all()),
+                    //   child: const Center(
+                    //     child: Text(
+                    //       'Logo of the APP',
+                    //       style: TextStyle(fontWeight: FontWeight.w500),
+                    //     ),
+                    //   ),
+                    // ),
                     actions: [
                       IconButton(onPressed: () {}, icon: const Icon(Icons.menu))
                     ],

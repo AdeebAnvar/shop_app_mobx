@@ -1,6 +1,6 @@
-import 'dart:convert';
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:developer';
-import 'dart:typed_data';
 import 'package:jwt_decode/jwt_decode.dart';
 
 import 'package:flutter/material.dart';
@@ -9,11 +9,9 @@ import 'package:mobx/mobx.dart' as mobx;
 import 'package:mobx/mobx.dart';
 import 'package:shopp_app_mobx/data/providers/cart_providers.dart';
 import 'package:shopp_app_mobx/data/providers/login_provider.dart';
-import 'package:shopp_app_mobx/data/providers/single_product_provider.dart';
 import 'package:shopp_app_mobx/data/providers/token_provider.dart';
 import 'package:shopp_app_mobx/data/repositories/cart_repositories.dart';
 import 'package:shopp_app_mobx/data/repositories/login_repository.dart';
-import 'package:shopp_app_mobx/data/repositories/single_product_repository.dart';
 import 'package:shopp_app_mobx/data/repositories/token_repository.dart';
 import 'package:shopp_app_mobx/widgets/loading_dialogue.dart';
 part 'login_screen_store.g.dart';

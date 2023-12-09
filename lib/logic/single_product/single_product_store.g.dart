@@ -263,6 +263,22 @@ mixin _$SingleProductStore on _SingleProductStore, Store {
     });
   }
 
+  late final _$colorIndexAtom =
+      Atom(name: '_SingleProductStore.colorIndex', context: context);
+
+  @override
+  int get colorIndex {
+    _$colorIndexAtom.reportRead();
+    return super.colorIndex;
+  }
+
+  @override
+  set colorIndex(int value) {
+    _$colorIndexAtom.reportWrite(value, super.colorIndex, () {
+      super.colorIndex = value;
+    });
+  }
+
   late final _$loadingStringAtom =
       Atom(name: '_SingleProductStore.loadingString', context: context);
 
@@ -283,9 +299,9 @@ mixin _$SingleProductStore on _SingleProductStore, Store {
       AsyncAction('_SingleProductStore.getSingleProductData', context: context);
 
   @override
-  Future<void> getSingleProductData() {
+  Future<void> getSingleProductData({required String urlKey}) {
     return _$getSingleProductDataAsyncAction
-        .run(() => super.getSingleProductData());
+        .run(() => super.getSingleProductData(urlKey: urlKey));
   }
 
   late final _$addItemToCartAsyncAction =
@@ -344,11 +360,11 @@ mixin _$SingleProductStore on _SingleProductStore, Store {
   }
 
   @override
-  void toggleSelectedValue(String label, String value, String? sku) {
+  void toggleSelectedValue(String label, String value, String? sku, int index) {
     final _$actionInfo = _$_SingleProductStoreActionController.startAction(
         name: '_SingleProductStore.toggleSelectedValue');
     try {
-      return super.toggleSelectedValue(label, value, sku);
+      return super.toggleSelectedValue(label, value, sku, index);
     } finally {
       _$_SingleProductStoreActionController.endAction(_$actionInfo);
     }
@@ -382,6 +398,7 @@ addProductsToCart: ${addProductsToCart},
 isSelectedDetailsTab: ${isSelectedDetailsTab},
 hideAppBar: ${hideAppBar},
 selectedValuesByRow: ${selectedValuesByRow},
+colorIndex: ${colorIndex},
 loadingString: ${loadingString},
 state: ${state}
     ''';

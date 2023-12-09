@@ -41,8 +41,19 @@ class SingleProductWidget extends StatelessWidget {
         //! user reviews
         ratingAndReviews(item[0]),
 
+        const SizedBox(height: 20),
+        Text(
+          singleProductStore!.stockStatusToString(
+            item![0].variants![0].product!.stockStatus!,
+          ),
+          style: TextStyle(
+              color: Colors.green.shade800,
+              fontSize: 20,
+              fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 20),
         //! price of product
-        Rate(item: item[0]),
+        Rate(item: item![0]),
         const SizedBox(height: 60),
         const Divider(endIndent: 10, indent: 10),
         const SizedBox(height: 20),
@@ -50,7 +61,7 @@ class SingleProductWidget extends StatelessWidget {
         //! product color and other attributes
 
         buildColorStorageDelivery(
-            item: item[0],
+            item: item![0],
             store: singleProductStore!,
             controller: quantityFieldController),
         const SizedBox(height: 20),
@@ -358,9 +369,14 @@ class SingleProductWidget extends StatelessWidget {
                           return Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: e.values!
+                                .asMap()
+                                .entries
                                 .map(
-                                  (value) => Observer(
+                                  (entry) => Observer(
                                     builder: (_) {
+                                      final index = entry.key;
+                                      final value = entry.value;
+
                                       if (selectedValues.isEmpty) {
                                         selectedValues
                                             .add(value.label.toString());
@@ -384,11 +400,11 @@ class SingleProductWidget extends StatelessWidget {
                                                     value.label.toString();
 
                                                 store.toggleSelectedValue(
-                                                  label,
-                                                  value.label.toString(),
-                                                  item.sku,
-                                                );
-                                                log('Clicked on ${value.label}: vd${value.uid}');
+                                                    label,
+                                                    value.label.toString(),
+                                                    item.sku,
+                                                    index);
+                                                log('Clicked on ${index}: vd${value.uid}, Index: $index');
                                               },
                                               child: AnimatedContainer(
                                                 duration: const Duration(
@@ -397,20 +413,23 @@ class SingleProductWidget extends StatelessWidget {
                                                 height: 40,
                                                 margin: const EdgeInsets.all(7),
                                                 decoration: BoxDecoration(
-                                                    border: Border.all(
-                                                      width: 2,
-                                                      color: isSelected
-                                                          ? Colors.teal.shade700
-                                                          : Colors.grey,
-                                                    ),
-                                                    color: Color(int.parse(
-                                                            value.swatchData!
-                                                                .value!
-                                                                .substring(
-                                                                    1, 7),
-                                                            radix: 16) +
-                                                        0xFF000000),
-                                                    shape: BoxShape.circle),
+                                                  border: Border.all(
+                                                    width: 2,
+                                                    color: isSelected
+                                                        ? Colors.teal.shade700
+                                                        : Colors.grey,
+                                                  ),
+                                                  color: Color(
+                                                    int.parse(
+                                                          value.swatchData!
+                                                              .value!
+                                                              .substring(1, 7),
+                                                          radix: 16,
+                                                        ) +
+                                                        0xFF000000,
+                                                  ),
+                                                  shape: BoxShape.circle,
+                                                ),
                                               ),
                                             )
                                           : ActionChip(
@@ -420,8 +439,9 @@ class SingleProductWidget extends StatelessWidget {
                                                 store.toggleSelectedValue(
                                                     label,
                                                     value.label.toString(),
-                                                    item.sku);
-                                                log('Clicked on $label: ${value.label}');
+                                                    item.sku,
+                                                    index);
+                                                log('Clicked on $label: ${value.label}, Index: $index');
                                               },
                                               shape: RoundedRectangleBorder(
                                                 borderRadius:

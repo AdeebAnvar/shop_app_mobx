@@ -12,7 +12,9 @@ class AppRouter {
 
       case '/product_detail_screen':
         return MaterialPageRoute(
-          builder: (_) => const ProductDetailScreen(),
+          builder: (_) => ProductDetailScreen(
+            urlKey: routeSettings.arguments!.toString(),
+          ),
         );
       default:
         return MaterialPageRoute(
